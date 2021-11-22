@@ -13,7 +13,7 @@ import (
 )
 
 var offsetDay = flag.Duration("offsetDay", 5, "偏移天数0-5,默认5")
-var start = flag.String("start", "", "开始时间，如：2021-05-15 08:59:00")
+var start = flag.String("start", "", "开始时间，如：08:59:00")
 var runtime = flag.Duration("runtime", 60, "运行时长，默认60s")
 var hallTime = flag.String("hall", "18:00,20:00", "场次范围【13:00,14:00】、【20:00,22:00】")
 var showId = flag.String("showId", "753", "三楼竞训馆=753，一楼综合馆=752")
@@ -32,9 +32,12 @@ func main() {
 		return
 	}
 	client := badminton.NewClient()
-	tool.Info("[程序]开始运行", client)
-	startTime := tool.StringToTime(*start)
+	startTime := tool.StringToTime(tool.FormatTime(0) + *start)
+	if startTime.Before(time.Now()) {
+		startTime = startTime.Add(time.Hour * 24)
+	}
 	endTime := startTime.Add(time.Second * (*runtime))
+	tool.Info("[程序]开始运行", startTime, endTime)
 	// 等待启动
 	client.WaitStart(startTime)
 	// 提前dns缓存
