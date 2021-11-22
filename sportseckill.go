@@ -32,7 +32,7 @@ func main() {
 		return
 	}
 	client := badminton.NewClient()
-	startTime := tool.StringToTime(tool.FormatTime(0) + *start)
+	startTime := tool.StringToTime(tool.FormatTime(0) + " " + *start)
 	if startTime.Before(time.Now()) {
 		startTime = startTime.Add(time.Hour * 24)
 	}
