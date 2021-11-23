@@ -36,14 +36,6 @@ func main() {
 		startTime = startTime.Add(time.Hour * 24)
 	}
 	endTime := startTime.Add(time.Second * (*runtime))
-	tool.Info("[程序]开始运行", startTime, endTime)
-	// 等待启动
-	client.WaitStart(startTime)
-	// 提前dns缓存
-	dnsCache("https://xihuwenti.juyancn.cn")
-	success := false
-	count := 0
-
 	var buyInfo badminton.BuyInfo
 	buyInfo.Username = *username
 	buyInfo.Mobile = *mobile
@@ -51,6 +43,13 @@ func main() {
 	buyInfo.ShowId = *showId
 	buyInfo.HallTime = *hallTime
 	buyInfo.OffsetDay = *offsetDay
+	tool.Info("[程序]开始运行", startTime, endTime, buyInfo.HallTime, tool.FormatTime(buyInfo.OffsetDay*24*time.Hour))
+	// 等待启动
+	client.WaitStart(startTime)
+	// 提前dns缓存
+	dnsCache("https://xihuwenti.juyancn.cn")
+	success := false
+	count := 0
 
 	for hallId := 1; hallId < 6; {
 		if success {
