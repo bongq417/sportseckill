@@ -53,6 +53,14 @@ func FormatTime(d time.Duration) string {
 	return iso
 }
 
+func FormatTimeByTime(date time.Time, d time.Duration) string {
+	utcTime := date.Add(d).UTC()
+	iso := utcTime.String()
+	isoBytes := []byte(iso)
+	iso = string(isoBytes[:10])
+	return iso
+}
+
 func StringToTime(str string) time.Time {
 	local, _ := time.LoadLocation("Local")
 	time, _ := time.ParseInLocation("2006-01-02 15:04:05", str, local)

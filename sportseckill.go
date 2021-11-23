@@ -43,7 +43,13 @@ func main() {
 	buyInfo.ShowId = *showId
 	buyInfo.HallTime = *hallTime
 	buyInfo.OffsetDay = *offsetDay
-	tool.Info("[程序]开始运行", startTime, endTime, buyInfo.HallTime, tool.FormatTime(buyInfo.OffsetDay*24*time.Hour))
+
+	logMap := map[string]interface{}{}
+	logMap["startTime"] = startTime
+	logMap["endTime"] = endTime
+	logMap["hallTime"] = buyInfo.HallTime
+	logMap["offsetDay"] = tool.FormatTimeByTime(startTime, buyInfo.OffsetDay*24*time.Hour)
+	tool.Info("[程序]开始运行", logMap)
 	// 等待启动
 	client.WaitStart(startTime)
 	// 提前dns缓存
