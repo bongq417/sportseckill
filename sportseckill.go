@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/bongq417/sportseckill/badminton"
 	"github.com/bongq417/sportseckill/tool"
-	"github.com/google/uuid"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -74,7 +73,6 @@ func main() {
 }
 
 func GetBadminton(client *badminton.Client, buyInfo badminton.BuyInfo, hallId int, success *bool) {
-	traceId := uuid.New().String()
 	data := url.Values{}
 	// https://xihuwenti.juyancn.cn/wechat/product/details?id=752&time=1631548800
 	data.Set("show_id", buyInfo.ShowId)
@@ -89,7 +87,7 @@ func GetBadminton(client *badminton.Client, buyInfo badminton.BuyInfo, hallId in
 	data.Set("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime)
 	var saveResult badminton.SaveResult
 	client.DoPost("https://xihuwenti.juyancn.cn/wechat/product/save", data, &saveResult)
-	tool.Info("[Save]", traceId, data, saveResult)
+	tool.Info("[Save]", data, saveResult)
 	if saveResult.Code != 0 {
 		return
 	}
@@ -105,7 +103,7 @@ func GetBadminton(client *badminton.Client, buyInfo badminton.BuyInfo, hallId in
 	data2.Set("couponId", "0")
 	var addResult badminton.AddResult
 	client.DoPost("https://xihuwenti.juyancn.cn/wechat/order/add", data2, &addResult)
-	tool.Info("[Add]", traceId, addResult, data2)
+	tool.Info("[Add]", addResult, data2)
 	if addResult.OrderNum != "" {
 		*success = true
 	}

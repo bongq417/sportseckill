@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"strings"
@@ -24,8 +25,10 @@ func init() {
 
 }
 
+var traceId = uuid.New().String()
+
 func Info(args ...interface{}) {
-	log.Info(args)
+	log.Info(traceId, args)
 }
 
 // Timestamp 获取timestamp格式时间
