@@ -62,6 +62,7 @@ func main() {
 	logMap["startTime"] = startTime
 	logMap["endTime"] = endTime
 	logMap["hallTime"] = buyInfo.HallTime
+	logMap["hallTime2"] = buyInfo.HallTime2
 	logMap["offsetDay"] = tool.FormatTimeByTime(startTime, buyInfo.OffsetDay*24*time.Hour)
 	tool.Info("[程序]开始运行", logMap)
 	// 等待启动
@@ -71,18 +72,16 @@ func main() {
 	success := false
 	count := 0
 
-	for hallId := 1; hallId < 6; {
+	for hallId := 1; hallId <= 6; {
 		if success {
 			break
 		}
 		GetBadminton(client, buyInfo, hallId, &success)
-		if hallId < 6 {
-			hallId++
-		}
-		if hallId == 6 {
+		hallId++
+		if hallId > 6 {
 			hallId = 1
 			count++
-			time.Sleep(time.Millisecond * 50)
+			time.Sleep(time.Millisecond * 100)
 		}
 		if endTime.Before(time.Now()) {
 			tool.Info("[程序]运行超时，结束程序")
@@ -98,14 +97,14 @@ func GetBadminton(client *badminton.Client, buyInfo badminton.BuyInfo, hallId in
 	data.Set("date", tool.FormatTime(buyInfo.OffsetDay*24*time.Hour))
 	// 一楼综合馆 752 86-91 表示为1号场地~6号场地
 	// 三楼竞训馆 753 80-85 表示为1号场地~6号场地
-	hallId += 80
+	hallId += 79
 	if buyInfo.ShowId == "752" {
-		hallId += 5
+		hallId += 6
 	}
 	//data.Set("data[]", sport+",20:00,22:00")
 	data.Set("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime)
 	if buyInfo.HallTime != "" {
-		data.Set("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime2)
+		data.Add("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime2)
 	}
 	var saveResult badminton.SaveResult
 	client.DoPost("https://xihuwenti.juyancn.cn/wechat/product/save", data, &saveResult)
