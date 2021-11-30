@@ -103,7 +103,7 @@ func GetBadminton(client *badminton.Client, buyInfo badminton.BuyInfo, hallId in
 	}
 	//data.Set("data[]", sport+",20:00,22:00")
 	data.Set("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime)
-	if buyInfo.HallTime != "" {
+	if buyInfo.HallTime2 != "" {
 		data.Add("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime2)
 	}
 	var saveResult badminton.SaveResult
