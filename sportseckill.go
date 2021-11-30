@@ -11,10 +11,13 @@ import (
 	"time"
 )
 
-var offsetDay = flag.Duration("offsetDay", 4, "偏移天数0-4,默认4")
+var offsetDay = flag.Duration("offsetDay", 4, "偏移天数0-4,默认【4ns】")
 var start = flag.String("start", "", "开始时间，如：08:59:00")
-var runtime = flag.Duration("runtime", 60, "运行时长，默认60s")
+var startOffset = flag.Duration("startOffset", 0, "开始时间偏移，默认【0ns】，与start配合")
+var startDate = flag.String("startDate", "", "开始时间与start二选一，如：2021-12-01 08:59:00")
+var runtime = flag.Duration("runtime", 60, "运行时长，默认【60ns】")
 var hallTime = flag.String("hall", "18:00,20:00", "场次范围【13:00,14:00】、【20:00,22:00】")
+var hallTime2 = flag.String("hall2", "", "第二场次范围【13:00,14:00】、【20:00,22:00】")
 var showId = flag.String("showId", "753", "三楼竞训馆=753，一楼综合馆=752")
 var username = flag.String("username", "", "姓名")
 var mobile = flag.String("mobile", "", "手机号")
@@ -26,12 +29,22 @@ func init() {
 
 func main() {
 	// 参数校验
-	if *start == "" || *username == "" || *mobile == "" || *idCard == "" {
-		fmt.Println("开始时间、姓名、手机号、身份证都不能为空")
+	if *username == "" || *mobile == "" || *idCard == "" {
+		fmt.Println("姓名、手机号、身份证都不能为空")
+		return
+	}
+	if *start == "" && *startDate == "" {
+		fmt.Println("开始时间不能为空")
 		return
 	}
 	client := badminton.NewClient()
-	startTime := tool.StringToTime(tool.FormatTime(0) + " " + *start)
+	var startTime time.Time
+	if *startDate != "" {
+		startTime = tool.StringToTime(*startDate)
+	} else {
+		startTime = tool.StringToTime(tool.FormatTime(*startOffset) + " " + *start)
+	}
+
 	if startTime.Before(time.Now()) {
 		startTime = startTime.Add(time.Hour * 24)
 	}
@@ -42,6 +55,7 @@ func main() {
 	buyInfo.IdCard = *idCard
 	buyInfo.ShowId = *showId
 	buyInfo.HallTime = *hallTime
+	buyInfo.HallTime2 = *hallTime2
 	buyInfo.OffsetDay = *offsetDay
 
 	logMap := map[string]interface{}{}
@@ -90,6 +104,9 @@ func GetBadminton(client *badminton.Client, buyInfo badminton.BuyInfo, hallId in
 	}
 	//data.Set("data[]", sport+",20:00,22:00")
 	data.Set("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime)
+	if buyInfo.HallTime != "" {
+		data.Set("data[]", strconv.Itoa(hallId)+","+buyInfo.HallTime2)
+	}
 	var saveResult badminton.SaveResult
 	client.DoPost("https://xihuwenti.juyancn.cn/wechat/product/save", data, &saveResult)
 	tool.Info("[Save]", data, saveResult)

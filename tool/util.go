@@ -63,8 +63,8 @@ func FormatTimeByTime(date time.Time, d time.Duration) string {
 
 func StringToTime(str string) time.Time {
 	local, _ := time.LoadLocation("Local")
-	time, _ := time.ParseInLocation("2006-01-02 15:04:05", str, local)
-	return time
+	localTime, _ := time.ParseInLocation("2006-01-02 15:04:05", str, local)
+	return localTime
 }
 
 // ParseRequestParams 转化请求参数为json

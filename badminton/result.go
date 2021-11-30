@@ -20,5 +20,6 @@ type BuyInfo struct {
 	IdCard    string        `json:"id_card"`
 	ShowId    string        `json:"showId"`
 	HallTime  string        `json:"hallTime"`
+	HallTime2 string        `json:"hallTime2"`
 	OffsetDay time.Duration `json:"offsetDay"`
 }
