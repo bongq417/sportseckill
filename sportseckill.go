@@ -19,6 +19,7 @@ var runtime = flag.Duration("runtime", 60, "运行时长，默认【60ns】")
 var hallTime = flag.String("hall", "18:00,20:00", "场次范围【13:00,14:00】、【20:00,22:00】")
 var hallTime2 = flag.String("hall2", "", "第二场次范围【13:00,14:00】、【20:00,22:00】")
 var showId = flag.String("showId", "753", "三楼竞训馆=753，一楼综合馆=752")
+var startHallId = flag.Int("startHallId", 2, "开始场地，1-6，默认第二块")
 var username = flag.String("username", "", "姓名")
 var mobile = flag.String("mobile", "", "手机号")
 var idCard = flag.String("card", "", "身份证")
@@ -72,14 +73,14 @@ func main() {
 	success := false
 	count := 0
 
-	for hallId := 1; hallId <= 6; {
+	for hallId := *startHallId; hallId <= 6; {
 		if success {
 			break
 		}
 		GetBadminton(client, buyInfo, hallId, &success)
 		hallId++
 		if hallId > 6 {
-			hallId = 1
+			hallId = *startHallId
 			count++
 			time.Sleep(time.Millisecond * 100)
 		}
